@@ -29,10 +29,6 @@ This project automates the scraping, extraction, and annotation of NeurIPS resea
 - Implements retry mechanisms for API failures.
 - Uses caching to avoid redundant API calls.
 
----
-
-## Setup
-
 ### Prerequisites
 Ensure you have Python 3+ installed and install the required dependencies:
 
