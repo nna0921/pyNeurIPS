@@ -1,59 +1,90 @@
-NeurIPS Paper Scrapers
-This project contains two Python scrapers to download NeurIPS research papers:
+# NeurIPS Paper Scrapers & AI-Powered Annotation
 
-Google Drive Uploader (scraper.py): Downloads papers and uploads them to Google Drive.
+## Overview
+This project automates the scraping, extraction, and annotation of NeurIPS research papers using Large Language Models (LLMs). It consists of:
 
-Local Saver (local_scraper.py): Downloads and saves papers locally.
+- **Scraper**: Downloads NeurIPS papers year-wise and stores metadata.
+- **AI Annotation Pipeline**: Extracts titles and abstracts from PDFs and classifies them into predefined AI research categories using Google Gemini API, Cohere, Hugging Face, and Ollama.
+- **Resumable Execution**: Skips previously processed papers, handles API failures, and reduces redundant API calls with caching.
 
-#Features
-Scrapes NeurIPS papers by year.
+---
 
-Downloads PDFs concurrently for efficiency.
+## Features
 
-Saves metadata (title, authors, PDF link) in a CSV file.
+### Web Scraper
+- Scrapes NeurIPS papers by year from `https://papers.nips.cc`.
+- Downloads PDFs concurrently for efficiency.
+- Saves metadata (title, authors, PDF link, year) in a CSV file.
+- Supports Google Drive upload for cloud storage.
 
-Uploads papers to Google Drive (for scraper.py).
+### AI Annotation Pipeline
+- Extracts the title and abstract from research papers.
+- Classifies papers into five categories:  
+  - Deep Learning
+  - NLP
+  - Computer Vision
+  - Reinforcement Learning
+  - Optimization & Theoretical ML
+- Uses Google Gemini API for classification (with fallback to Cohere, Hugging Face, and Ollama).
+- Implements retry mechanisms for API failures.
+- Uses caching to avoid redundant API calls.
 
-Avoids duplicate downloads.
+---
 
-#Setup
-Prerequisites
-Ensure you have Python 3+ installed and install the dependencies:
+## Setup
 
-pip install requests beautifulsoup4 pandas pydrive concurrent.futures
-For Google Drive authentication, follow this guide to set up OAuth credentials.
+### Prerequisites
+Ensure you have Python 3+ installed and install the required dependencies:
 
-#Usage
-1. Run the Google Drive Uploader
+```bash
+pip install requests beautifulsoup4 pandas pydrive concurrent.futures pdfplumber google-generativeai cohere pickle-mixin
+## Usage
+###1. Run the Web Scraper
+Google Drive Uploader
 python scraper.py
 Authenticates with Google Drive.
-
-Downloads NeurIPS papers and uploads them to Drive.
-
+Downloads NeurIPS papers and uploads them to Google Drive.
 Saves metadata to metadata.csv.
-
-2. Run the Local Saver
+Local Saver
 python local_scraper.py
-Downloads NeurIPS papers to D://downloads.
-
+Downloads NeurIPS papers to D://downloads/.
 Saves metadata to meta.csv.
+###2. Run the AI Annotation Pipeline
+python annotator.py
+Extracts title and abstract from downloaded PDFs.
+Sends extracted text to the Google Gemini API for classification.
+Handles API rate limits and quota exhaustion with retry mechanisms.
+Caches previously classified papers to optimize processing.
+Saves results to annotated_papers.csv.
+##Configuration
+Modify the following variables in scraper.py, local_scraper.py, and annotator.py as needed:
 
-#Configuration
-Modify the following variables in both scripts as needed:
+# Web Scraper Configuration
+BASE_URL = "https://papers.nips.cc/"
+DOWNLOAD_DIR = "D://downloads/"
+CSV_FILE = "meta.csv"
+THREAD_POOL_SIZE = 5  # Number of concurrent downloads
 
-BASE_URL: NeurIPS website base URL.
+# AI Annotation Configuration
+GEMINI_API_KEY = "your-google-gemini-api-key"
+CATEGORIES = ["Deep Learning", "NLP", "Computer Vision", "Reinforcement Learning", "Optimization & Theoretical ML"]
+CACHE_FILE = "processed_papers.pkl"  # Stores cached classifications
 
-DOWNLOAD_DIR: Directory for saving PDFs.
-
-CSV_FILE: Metadata storage file.
-
-THREAD_POOL_SIZE: Number of concurrent downloads.
-
-#Notes
-Ensure client_secrets.json is excluded from Git commits (.gitignore).
-
+# API Retry Settings
+RETRY_LIMIT = 3
+WAIT_TIME = 60  # Seconds to wait before retrying on API failure
+Notes
+Ensure client_secrets.json is excluded from Git commits (.gitignore) when using Google Drive API.
 If using Google Drive, authenticate before running scraper.py.
+API quota limits may apply; consider using Ollama for offline classification.
+The script is resumable and will skip previously processed papers.
+Future Improvements
+Improve title and abstract extraction using pdfminer.six.
+Implement multi-label classification for papers that fit into multiple categories.
+Optimize local LLMs for faster and more accurate processing.
+Author
+Published by nna0921 | Anna Zubair
 
-published by nna0921 | Anna Zubair 
-Happy Scraping!
+Happy Scraping and Annotating!
+
 
