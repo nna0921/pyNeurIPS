@@ -7,8 +7,8 @@ import re
 import pickle  # To cache classifications
 from time import sleep
 
-# Set up Google Gemini API
-GEMINI_API_KEY = "AIzaSyBreHt9SdvkNBtljDE-L0sCJHgpH5h9tlw"  # Replace with your valid API key
+# Set up Google Gemini APIs
+GEMINI_API_KEY = "enter-your-key"  # Replace with your valid API key
 genai.configure(api_key=GEMINI_API_KEY)
 
 # Define Categories
